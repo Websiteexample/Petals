@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Petal and Pour — Floral Atelier and Café, Chattanooga TN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sage:#5e6154;
+    --sage-dark:#484a3f;
+    --gold:#5c5145;
+    --gold-soft:#a9926f;
+    --cream:#faf7f0;
+    --cream-2:#f3efe4;
+    --ink:#2a2b24;
+    --line: rgba(42,43,36,0.14);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+  }
+  h1,h2,h3,.serif{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:400;
+    letter-spacing:0.01em;
+  }
+  .eyebrow{
+    font-family:'Inter',sans-serif;
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:500;
+  }
+  a{color:inherit; text-decoration:none;}
+  img{display:block; width:100%; height:100%; object-fit:cover;}
+
+  /* ---------- corner brand mark (persistent) ---------- */
+  .brand-mark{
+    position:fixed;
+    top:22px; left:28px;
+    width:52px; height:52px;
+    border-radius:50%;
+    overflow:hidden;
+    z-index:200;
+    border:1px solid rgba(250,247,240,0.5);
+    background:rgba(94,97,84,0.25);
+    backdrop-filter:blur(6px);
+  }
+  .brand-mark img{width:100%;height:100%;object-fit:cover;}
+
+  .site-nav{
+    position:fixed; top:0; left:0; right:0;
+    z-index:150;
+    display:flex; justify-content:flex-end; align-items:center;
+    padding:28px 44px;
+    mix-blend-mode:normal;
+  }
+  .site-nav ul{
+    display:flex; gap:38px; list-style:none;
+  }
+  .site-nav a{
+    font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
+    color:#fff; font-weight:500;
+    position:relative;
+    padding-bottom:4px;
+  }
+  .site-nav a::after{
+    content:'';
+    position:absolute; left:0; bottom:0;
+    width:0; height:1px; background:#fff;
+    transition:width .35s ease;
+  }
+  .site-nav a:hover::after{width:100%;}
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    height:100vh;
+    width:100%;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    justify-content:flex-end;
+  }
+  .hero video{
+    position:absolute; inset:0;
+    width:100%; height:100%;
+    object-fit:cover;
+    filter:brightness(0.62) saturate(1.05);
+  }
+  .hero::before{
+    content:'';
+    position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(20,20,14,0.15) 0%, rgba(20,20,14,0.05) 35%, rgba(20,20,14,0.55) 100%);
+    z-index:1;
+  }
+  .hero-content{
+    position:relative; z-index:2;
+    padding:0 44px 72px;
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
+    gap:34px;
+    text-align:center;
+  }
+  .hero-title-img{
+    width:min(760px, 78vw);
+    display:block;
+    margin:0 auto;
+  }
+  .hero-sub{
+    color:#f4f1e8;
+    text-align:center;
+    max-width:320px;
+  }
+  .hero-sub .serif{
+    font-size:26px; font-style:italic; font-weight:400;
+    margin-bottom:14px;
+    line-height:1.15;
+  }
+  .hero-sub a{
+    font-size:11px; letter-spacing:0.16em; text-transform:uppercase;
+    border-bottom:1px solid rgba(244,241,232,0.6);
+    padding-bottom:3px;
+  }
+  .scroll-cue{
+    position:absolute; bottom:28px; left:44px; z-index:2;
+    color:#f4f1e8; font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
+    display:flex; align-items:center; gap:12px;
+  }
+  .scroll-cue .stem{
+    width:1px; height:36px; background:rgba(244,241,232,0.5);
+    position:relative; overflow:hidden;
+  }
+  .scroll-cue .stem::after{
+    content:''; position:absolute; top:-100%; left:0; width:100%; height:100%;
+    background:#f4f1e8;
+    animation:pour 2.2s ease-in-out infinite;
+  }
+  @keyframes pour{ 0%{top:-100%;} 60%{top:100%;} 100%{top:100%;} }
+
+  section{ position:relative; }
+  .section-pad{ padding:150px 44px; }
+  .container{ max-width:1280px; margin:0 auto; }
+
+  /* thin sprig divider - signature motif */
+  .sprig{
+    width:64px; height:22px;
+    margin:26px 0;
+    opacity:0.8;
+  }
+  .sprig.center{margin-left:auto;margin-right:auto;}
+
+  /* ---------- STORY (offset stacked images) ---------- */
+  .story{
+    background:var(--cream);
+  }
+  .story .container{
+    display:grid;
+    grid-template-columns:0.92fr 1.08fr;
+    gap:100px;
+    align-items:center;
+  }
+  .story-images{
+    position:relative;
+    height:640px;
+  }
+  .story-img-back{
+    position:absolute;
+    top:0; left:0;
+    width:74%; height:72%;
+    border-radius:2px;
+    box-shadow:0 30px 60px -20px rgba(42,43,36,0.35);
+  }
+  .story-img-front{
+    position:absolute;
+    bottom:0; right:0;
+    width:62%; height:58%;
+    border-radius:2px;
+    box-shadow:0 30px 70px -18px rgba(42,43,36,0.45);
+    border:8px solid var(--cream);
+  }
+  .story-text .eyebrow{margin-bottom:18px;}
+  .story-text h2{
+    font-size:46px;
+    line-height:1.12;
+    font-weight:400;
+    margin-bottom:28px;
+    color:var(--sage-dark);
+  }
+  .story-text h2 em{font-style:italic; color:var(--gold);}
+  .story-text p{
+    font-size:16px; line-height:1.85;
+    color:#4a4b40;
+    max-width:460px;
+    margin-bottom:16px;
+    font-weight:300;
+  }
+  .story-note{
+    margin-top:34px;
+    padding-top:26px;
+    border-top:1px solid var(--line);
+    font-size:12px; letter-spacing:0.08em;
+    color:var(--gold);
+    text-transform:uppercase;
+    max-width:420px;
+  }
+
+  /* ---------- MENU (framed, editorial) ---------- */
+  .menu-section{
+    background:var(--sage);
+    color:var(--cream);
+  }
+  .menu-section .eyebrow{color:#d9d3bd;}
+  .menu-header{
+    text-align:center;
+    max-width:640px;
+    margin:0 auto 90px;
+  }
+  .menu-header h2{
+    font-size:50px; color:#fff; font-weight:400; margin:16px 0 8px;
+  }
+  .menu-header p{
+    font-size:15px; color:#d9d3bd; letter-spacing:0.04em; margin-top:10px;
+  }
+  .menu-body{
+    display:grid;
+    grid-template-columns:0.62fr 1.38fr;
+    gap:70px;
+    align-items:start;
+  }
+  .menu-image{
+    position:sticky;
+    top:110px;
+    height:620px;
+    border-radius:2px;
+    overflow:hidden;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.35);
+  }
+  .menu-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0 60px;
+  }
+  .menu-cat{
+    margin-bottom:64px;
+  }
+  .menu-cat-title{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:24px;
+    color:#e7c98a;
+    margin-bottom:22px;
+    padding-bottom:12px;
+    border-bottom:1px solid rgba(250,247,240,0.22);
+  }
+  .menu-item{
+    margin-bottom:26px;
+  }
+  .menu-item-row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    gap:16px;
+    font-family:'Cormorant Garamond',serif;
+    font-size:20px;
+    color:#fff;
+  }
+  .menu-item-row .price{
+    font-family:'Inter',sans-serif;
+    font-size:13px; font-weight:400;
+    color:#e7c98a;
+    white-space:nowrap;
+  }
+  .menu-item p{
+    font-size:13px; line-height:1.7;
+    color:#c8c3ab;
+    margin-top:6px;
+    max-width:440px;
+    font-weight:300;
+  }
+  .menu-note{
+    font-size:11px; color:#a9a488; margin-top:6px; font-style:italic;
+  }
+  .menu-full-cta{
+    text-align:center; margin-top:20px;
+  }
+  .menu-full-cta a{
+    display:inline-block;
+    font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
+    color:#fff;
+    border:1px solid rgba(255,255,255,0.4);
+    padding:16px 38px;
+    transition:all .3s ease;
+  }
+  .menu-full-cta a:hover{
+    background:#fff; color:var(--sage-dark);
+    border-color:#fff;
+  }
+
+  /* ---------- RESERVATIONS ---------- */
+  .reserve{
+    background:var(--cream-2);
+  }
+  .reserve .container{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:0;
+    border:1px solid var(--line);
+    background:var(--cream);
+  }
+  .reserve-image{
+    position:relative;
+    min-height:640px;
+    overflow:hidden;
+    order:2;
+  }
+  .reserve-image .tag{
+    position:absolute; top:28px; left:28px;
+    background:var(--cream);
+    padding:14px 20px;
+    max-width:280px;
+    font-size:11px; letter-spacing:0.06em;
+    color:var(--gold);
+    text-transform:uppercase;
+    line-height:1.6;
+  }
+  .reserve-image .tag strong{
+    display:block; font-family:'Cormorant Garamond',serif;
+    text-transform:none; letter-spacing:0.01em;
+    font-size:15px; color:var(--sage-dark); margin-bottom:6px;
+    font-style:italic;
+  }
+  .reserve-form-wrap{
+    padding:80px 64px;
+    display:flex; flex-direction:column; justify-content:center;
+    order:1;
+  }
+  .reserve-form-wrap h2{
+    font-size:42px; color:var(--sage-dark); margin:14px 0 14px;
+  }
+  .reserve-form-wrap > p{
+    font-size:15px; color:#5a5b4e; line-height:1.75; margin-bottom:38px; max-width:400px;
+  }
+  .form-row{
+    display:grid; grid-template-columns:1fr 1fr; gap:20px;
+    margin-bottom:20px;
+  }
+  .field{
+    display:flex; flex-direction:column; gap:8px;
+  }
+  .field label{
+    font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold);
+  }
+  .field input, .field select{
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    padding:13px 4px;
+    background:transparent;
+    border:none;
+    border-bottom:1px solid var(--line);
+    color:var(--ink);
+    outline:none;
+    transition:border-color .25s ease;
+  }
+  .field input:focus, .field select:focus{
+    border-color:var(--gold);
+  }
+  .field.full{grid-column:1/-1;}
+  .submit-btn{
+    margin-top:16px;
+    align-self:flex-start;
+    background:var(--sage-dark);
+    color:#fff;
+    border:none;
+    padding:17px 44px;
+    font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
+    cursor:pointer;
+    transition:background .3s ease;
+  }
+  .submit-btn:hover{ background:var(--gold); }
+  .form-hint{
+    margin-top:18px;
+    font-size:11px; line-height:1.6;
+    color:#8d8873; font-style:italic;
+    max-width:400px;
+  }
+
+  /* ---------- VISIT / CONTACT + MAP ---------- */
+  .visit{
+    background:var(--cream);
+  }
+  .visit .container{
+    display:grid;
+    grid-template-columns:0.85fr 1.15fr;
+    gap:0;
+    border:1px solid var(--line);
+  }
+  .visit-info{
+    padding:80px 64px;
+    background:var(--cream);
+  }
+  .visit-info h2{
+    font-size:42px; color:var(--sage-dark); margin:14px 0 40px;
+  }
+  .visit-block{
+    margin-bottom:34px;
+    padding-bottom:34px;
+    border-bottom:1px solid var(--line);
+  }
+  .visit-block:last-child{border-bottom:none;}
+  .visit-block .label{
+    font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold);
+    margin-bottom:10px;
+  }
+  .visit-block .hours-row{
+    display:flex; justify-content:space-between;
+    font-size:14px; color:#4a4b40;
+    padding:5px 0;
+  }
+  .visit-block .hours-row span:last-child{ color:var(--sage-dark); font-weight:500; }
+  .visit-block address{
+    font-style:normal; font-size:16px; font-family:'Cormorant Garamond',serif;
+    color:var(--sage-dark); line-height:1.6;
+  }
+  .visit-block .sub{ font-size:13px; color:#7a7b6a; margin-top:4px;}
+  .visit-map{
+    position:relative;
+    min-height:600px;
+    background:var(--sage);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    background:var(--sage-dark);
+    color:#e9e5d6;
+    padding:70px 44px 34px;
+    text-align:center;
+  }
+  footer .serif{
+    font-size:30px; font-style:italic; color:#fff; margin-bottom:18px;
+  }
+  footer .foot-links{
+    display:flex; justify-content:center; gap:34px;
+    margin:26px 0 40px;
+    font-size:11px; letter-spacing:0.14em; text-transform:uppercase;
+  }
+  footer .foot-links a{ color:#cfc9b0; transition:color .25s ease;}
+  footer .foot-links a:hover{ color:#fff; }
+  footer .fine{
+    font-size:11px; color:#a9a488; letter-spacing:0.04em;
+  }
+
+  @media (max-width: 980px){
+    .story .container, .reserve .container, .visit .container{ grid-template-columns:1fr; }
+    .story-images{ height:420px; margin-bottom:20px; }
+    .menu-body{ grid-template-columns:1fr; }
+    .menu-image{ position:static; height:320px; margin-bottom:40px; }
+    .menu-grid{ grid-template-columns:1fr; }
+    .form-row{ grid-template-columns:1fr; }
+    .site-nav ul{ gap:20px; }
+    .reserve-form-wrap, .visit-info{ padding:56px 30px; }
+    .reserve-image, .reserve-form-wrap{ order:initial; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- persistent corner brand mark -->
+  <div class="brand-mark">
+    <img src="images/icon.png" alt="Petal and Pour icon">
+  </div>
+
+  <nav class="site-nav">
+    <ul>
+      <li><a href="#story">Our Story</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#reserve">Reserve</a></li>
+      <li><a href="#visit">Visit</a></li>
+    </ul>
+  </nav>
+
+  <!-- ============ HERO — VIDEO BACKGROUND ============ -->
+  <section class="hero">
+    <video autoplay muted loop playsinline>
+      <source src="images/hero-video.mp4" type="video/mp4">
+    </video>
+    <div class="hero-content">
+      <img class="hero-title-img" src="images/hero-title.png" alt="Petal and Pour">
+      <div class="hero-sub">
+        <p class="serif">[Optional short line]</p>
+        <a href="#reserve">Reserve a table</a>
+      </div>
+    </div>
+    <div class="scroll-cue"><span class="stem"></span> Scroll</div>
+  </section>
+
+  <!-- ============ STORY — STACKED VISIBLE IMAGES ============ -->
+  <section class="story" id="story">
+    <div class="section-pad container">
+      <div class="story-images">
+        <div class="story-img-back">
+          <img src="images/story-back.jpg" alt="Story image — back">
+        </div>
+        <div class="story-img-front">
+          <img src="images/story-front.jpg" alt="Story image — front">
+        </div>
+      </div>
+      <div class="story-text">
+        <p class="eyebrow">Section Label</p>
+        <h2>Headline goes here</h2>
+        <p>[Client to provide: brief description of the business, its concept, and what makes it unique. 2–3 sentences.]</p>
+        <div class="story-note">[Location / tagline placeholder]</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MENU ============ -->
+  <section class="menu-section" id="menu">
+    <div class="section-pad container">
+      <div class="menu-header">
+        <p class="eyebrow">Menu</p>
+        <h2>Spring Menu</h2>
+        <p>[Full menu below, using client-provided items and pricing.]</p>
+      </div>
+
+      <div class="menu-body">
+        <div class="menu-image">
+          <img src="images/menu-image.jpg" alt="Menu image">
+        </div>
+      <div class="menu-grid">
+        <div>
+          <div class="menu-cat">
+            <div class="menu-cat-title">Seasonal Selections</div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Strawberry Crème Fraîche Latte</span><span class="price">$7.25</span></div>
+              <p>Strawberry infused espresso topped with a fluffy, crème fraîche almond cold foam, finished with freshly grated orange zest. Served iced.</p>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>La vie en Rose Latte</span><span class="price">from $5.75</span></div>
+              <p>Silky vanilla house-made syrup and essence of rose poured over espresso, garnished with dried rose petals from the garden. Iced or hot.</p>
+            </div>
+          </div>
+
+          <div class="menu-cat">
+            <div class="menu-cat-title">House Favorites</div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>The Garden Gate Latte</span><span class="price">from $5.25</span></div>
+              <p>Delicate house-made French lavender syrup layered over espresso, paired with rose and bergamot, garnished with an edible violet.</p>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Golden Pistachio Latte</span><span class="price">from $5.75</span></div>
+              <p>Pistachio and honey syrup poured over espresso, topped with almond cold foam and Tennessee honey, finished with flaky sea salt.</p>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Earl Grey Crème</span><span class="price">$4.50</span></div>
+              <p>Earl Grey tea steamed with house-made French lavender syrup and essence of bergamot.</p>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="menu-cat">
+            <div class="menu-cat-title">Classics</div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>House Drip</span><span class="price">$3.25 – $4.25</span></div>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Café Au Lait</span><span class="price">$4.75 – $5.75</span></div>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Espresso</span><span class="price">$3.00 – $4.25</span></div>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Cappuccino</span><span class="price">$4.25</span></div>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Latte</span><span class="price">$5.25 – $6.25</span></div>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Chai Latte</span><span class="price">$5.25 – $6.50</span></div>
+            </div>
+            <p class="menu-note">Coffee and espresso beans locally roasted by Goodman Coffee Roasters.</p>
+          </div>
+
+          <div class="menu-cat">
+            <div class="menu-cat-title">Bakery</div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Croissant au beurre</span><span class="price">$7.25</span></div>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Almond Croissant</span><span class="price">$7.75</span></div>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Ham &amp; Gruyère Croissant</span><span class="price">$8.50</span></div>
+            </div>
+            <div class="menu-item">
+              <div class="menu-item-row"><span>Macaron Flight</span><span class="price">$5.25</span></div>
+            </div>
+            <p class="menu-note">Featuring Bread &amp; Butter locally baked goods, served warmed upon request.</p>
+          </div>
+        </div>
+      </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ RESERVATIONS ============ -->
+  <section class="reserve" id="reserve">
+    <div class="section-pad container">
+      <div class="reserve-image">
+        <img src="images/reserve-image.jpg" alt="Reservation image">
+        <div class="tag">
+          <strong>[Label]</strong>
+          [Client to provide short caption for this image.]
+        </div>
+      </div>
+      <div class="reserve-form-wrap">
+        <p class="eyebrow">Reservations</p>
+        <h2>Reserve a table</h2>
+        <p>[Client to provide a short line about the reservation process, if any.]</p>
+        <form id="reserveForm">
+          <div class="form-row">
+            <div class="field"><label>Full Name</label><input type="text" name="name" placeholder="Your name" required></div>
+            <div class="field"><label>Phone</label><input type="tel" name="phone" placeholder="(423) 000-0000" required></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Date</label><input type="date" name="date" required></div>
+            <div class="field"><label>Time</label><input type="time" name="time" required></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Guests</label><input type="number" name="guests" min="1" placeholder="e.g. 2" required></div>
+            <div class="field"><label>Occasion</label><input type="text" name="occasion" placeholder="Optional"></div>
+          </div>
+          <div class="form-row">
+            <div class="field full"><label>Notes</label><input type="text" name="notes" placeholder="Anything we should know"></div>
+          </div>
+          <button type="submit" class="submit-btn">Send Reservation Request</button>
+          <p class="form-hint">[Placeholder phone number below — replace with the business's number. Submitting opens the guest's messaging app with the reservation details pre-filled as a text.]</p>
+        </form>
+
+        <script>
+          document.getElementById('reserveForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            const f = e.target;
+            const name = f.name.value.trim();
+            const phone = f.phone.value.trim();
+            const date = f.date.value;
+            const time = f.time.value;
+            const guests = f.guests.value.trim();
+            const occasion = f.occasion.value.trim();
+            const notes = f.notes.value.trim();
+
+            let message = `Reservation request — ${name}\nPhone: ${phone}\nDate: ${date}\nTime: ${time}\nGuests: ${guests}`;
+            if(occasion) message += `\nOccasion: ${occasion}`;
+            if(notes) message += `\nNotes: ${notes}`;
+
+            // PLACEHOLDER business number — replace with real number, digits only, country code included
+            const businessNumber = "14230000000";
+            const smsUrl = `sms:${businessNumber}?&body=${encodeURIComponent(message)}`;
+            window.location.href = smsUrl;
+          });
+        </script>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VISIT — MAP + INFO ============ -->
+  <section class="visit" id="visit">
+    <div class="section-pad container" style="padding-top:0;">
+      <div class="visit-info">
+        <p class="eyebrow">Visit</p>
+        <h2>Location &amp; hours</h2>
+
+        <div class="visit-block">
+          <div class="label">Address</div>
+          <address>Petal and Pour<br>Chattanooga, Tennessee</address>
+        </div>
+
+        <div class="visit-block">
+          <div class="label">Café Hours</div>
+          <div class="hours-row"><span>Daily</span><span>8:00 AM – 4:00 PM</span></div>
+        </div>
+
+        <div class="visit-block">
+          <div class="label">Floral Atelier &amp; Gift</div>
+          <div class="hours-row"><span>Mon – Thu</span><span>8:00 AM – 6:00 PM</span></div>
+          <div class="hours-row"><span>Fri – Sat</span><span>8:00 AM – 7:00 PM</span></div>
+          <div class="hours-row"><span>Sunday</span><span>8:00 AM – 4:00 PM</span></div>
+        </div>
+      </div>
+      <div class="visit-map">
+        <img src="images/map.jpg" alt="Map">
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="serif">Petal and Pour</div>
+    <div class="foot-links">
+      <a href="#story">Our Story</a>
+      <a href="#menu">Menu</a>
+      <a href="#reserve">Reserve</a>
+      <a href="#visit">Visit</a>
+    </div>
+    <div class="fine">© 2025 Petal and Pour — Floral Atelier and Café, Chattanooga, TN</div>
+  </footer>
+
+</body>
+</html>
