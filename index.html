@@ -48,21 +48,18 @@
     position:fixed;
     top:22px; left:28px;
     width:52px; height:52px;
-    border-radius:50%;
-    overflow:hidden;
     z-index:200;
-    border:1px solid rgba(250,247,240,0.5);
-    background:rgba(94,97,84,0.25);
-    backdrop-filter:blur(6px);
   }
-  .brand-mark img{width:100%;height:100%;object-fit:cover;}
+  .brand-mark img{
+    width:100%;height:100%;object-fit:contain;
+    filter:drop-shadow(0 1px 3px rgba(0,0,0,0.35));
+  }
 
   .site-nav{
     position:fixed; top:0; left:0; right:0;
     z-index:150;
     display:flex; justify-content:flex-end; align-items:center;
     padding:28px 44px;
-    mix-blend-mode:normal;
   }
   .site-nav ul{
     display:flex; gap:38px; list-style:none;
@@ -72,14 +69,20 @@
     color:#fff; font-weight:500;
     position:relative;
     padding-bottom:4px;
+    transition:color .3s ease;
   }
   .site-nav a::after{
     content:'';
     position:absolute; left:0; bottom:0;
-    width:0; height:1px; background:#fff;
+    width:0; height:1px; background:currentColor;
     transition:width .35s ease;
   }
   .site-nav a:hover::after{width:100%;}
+
+  /* nav switches to dark text once scrolled over light sections */
+  .site-nav.on-light a{
+    color:var(--sage-dark);
+  }
 
   /* ---------- HERO ---------- */
   .hero{
@@ -476,7 +479,7 @@
     <img src="images/icon.png" alt="Petal and Pour icon">
   </div>
 
-  <nav class="site-nav">
+  <nav class="site-nav" id="siteNav">
     <ul>
       <li><a href="#story">Our Story</a></li>
       <li><a href="#menu">Menu</a></li>
@@ -712,5 +715,47 @@
     <div class="fine">© 2025 Petal and Pour — Floral Atelier and Café, Chattanooga, TN</div>
   </footer>
 
+  <script>
+    // Ensure in-page anchor navigation creates real back/forward history steps,
+    // so the browser back button moves between sections instead of leaving the page.
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', function(e){
+        const targetId = this.getAttribute('href');
+        const target = document.querySelector(targetId);
+        if(!target) return;
+        e.preventDefault();
+        history.pushState({ section: targetId }, '', targetId);
+        target.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    window.addEventListener('popstate', function(e){
+      const hash = window.location.hash;
+      if(hash){
+        const target = document.querySelector(hash);
+        if(target){
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  </script>
+
+  <script>
+    // Nav switches to dark text once the light hero video is scrolled past
+    const nav = document.getElementById('siteNav');
+    const hero = document.querySelector('.hero');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if(entry.isIntersecting){
+          nav.classList.remove('on-light');
+        } else {
+          nav.classList.add('on-light');
+        }
+      });
+    }, { threshold: 0.15 });
+    observer.observe(hero);
+  </script>
 </body>
 </html>
