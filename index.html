@@ -81,7 +81,7 @@
 
   /* nav switches to dark text once scrolled over light sections */
   .site-nav.on-light a{
-    color:var(--sage-dark);
+    color:#5c5145;
   }
 
   /* ---------- HERO ---------- */
@@ -743,19 +743,22 @@
   </script>
 
   <script>
-    // Nav switches to dark text once the light hero video is scrolled past
+    // Nav switches to black text once scrolled past the dark hero video
     const nav = document.getElementById('siteNav');
     const hero = document.querySelector('.hero');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if(entry.isIntersecting){
-          nav.classList.remove('on-light');
-        } else {
-          nav.classList.add('on-light');
-        }
-      });
-    }, { threshold: 0.15 });
-    observer.observe(hero);
+
+    function updateNavColor(){
+      const heroBottom = hero.getBoundingClientRect().bottom;
+      if(heroBottom <= 80){
+        nav.classList.add('on-light');
+      } else {
+        nav.classList.remove('on-light');
+      }
+    }
+
+    window.addEventListener('scroll', updateNavColor);
+    window.addEventListener('resize', updateNavColor);
+    updateNavColor();
   </script>
 </body>
 </html>
