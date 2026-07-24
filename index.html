@@ -76,37 +76,45 @@
     .sprig-draw path{ stroke-dashoffset:0 !important; }
   }
 
-  /* ---------- corner brand mark (persistent) ---------- */
+  /* ---------- brand mark — now a true nav item, not floating ---------- */
   .brand-mark{
-    position:fixed;
-    top:20px; left:20px;
-    width:46px; height:46px;
-    z-index:200;
+    display:block;
+    width:40px; height:40px;
+    flex:0 0 auto;
     opacity:0;
-    animation:markIn 1s var(--ease) .4s forwards;
+    transform:translateY(-6px);
+    animation:markIn .8s var(--ease) .35s forwards;
+    transition:width .4s var(--ease), height .4s var(--ease);
   }
-  @keyframes markIn{ to{ opacity:1; } }
+  @keyframes markIn{ to{ opacity:1; transform:translateY(0); } }
   .brand-mark img{
     width:100%;height:100%;object-fit:contain;
     filter:drop-shadow(0 1px 3px rgba(0,0,0,0.35));
+    transition:filter .4s ease, transform .35s var(--ease);
+  }
+  .brand-mark:hover img{ transform:rotate(-4deg) scale(1.05); }
+  .site-nav.on-light .brand-mark img{
+    filter:drop-shadow(0 1px 2px rgba(0,0,0,0.08));
   }
 
   .site-nav{
     position:fixed; top:0; left:0; right:0;
     z-index:150;
-    display:flex; justify-content:flex-end; align-items:center;
-    padding:26px 40px;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:22px 40px;
     transition:padding .4s var(--ease), background .4s var(--ease), backdrop-filter .4s var(--ease);
   }
   .site-nav.scrolled{
-    padding:14px 40px;
-    background:rgba(250,247,240,0.72);
+    padding:13px 40px;
+    background:rgba(250,247,240,0.78);
     backdrop-filter:blur(10px) saturate(1.4);
     -webkit-backdrop-filter:blur(10px) saturate(1.4);
     box-shadow:0 1px 0 var(--line);
   }
+  .site-nav.scrolled .brand-mark{ width:32px; height:32px; }
   .site-nav ul{
     display:flex; gap:38px; list-style:none;
+    align-items:center;
   }
   .site-nav a{
     font-size:12px; letter-spacing:0.14em; text-transform:uppercase;
@@ -126,25 +134,26 @@
 
   .nav-toggle{
     display:none;
-    width:26px; height:20px;
+    width:44px; height:44px;
     position:relative;
     z-index:210;
     background:none; border:none; cursor:pointer;
     padding:0;
+    flex:0 0 auto;
   }
   .nav-toggle span{
-    position:absolute; left:0; width:100%; height:1.5px;
+    position:absolute; left:11px; width:22px; height:1.5px;
     background:#fff;
     transition:transform .35s var(--ease), opacity .25s ease, background .3s ease;
   }
-  .nav-toggle span:nth-child(1){ top:0; }
-  .nav-toggle span:nth-child(2){ top:9px; }
-  .nav-toggle span:nth-child(3){ top:18px; }
+  .nav-toggle span:nth-child(1){ top:16px; }
+  .nav-toggle span:nth-child(2){ top:22px; }
+  .nav-toggle span:nth-child(3){ top:28px; }
   .site-nav.on-light .nav-toggle span{ background:var(--gold); }
   .nav-open .nav-toggle span{ background:var(--sage-dark) !important; }
-  .nav-open .nav-toggle span:nth-child(1){ transform:translateY(9px) rotate(45deg); }
+  .nav-open .nav-toggle span:nth-child(1){ transform:translateY(6px) rotate(45deg); }
   .nav-open .nav-toggle span:nth-child(2){ opacity:0; }
-  .nav-open .nav-toggle span:nth-child(3){ transform:translateY(-9px) rotate(-45deg); }
+  .nav-open .nav-toggle span:nth-child(3){ transform:translateY(-6px) rotate(-45deg); }
 
   /* ---------- HERO ---------- */
   .hero{
@@ -594,10 +603,11 @@
     .section-pad{ padding:96px 22px; }
 
     /* nav → slide-in panel */
-    .site-nav{ padding:18px 20px; justify-content:space-between; align-items:center; }
-    .site-nav.scrolled{ padding:14px 20px; }
-    .brand-mark{ top:14px; left:16px; width:38px; height:38px; }
-    .nav-toggle{ display:block; }
+    .site-nav{ padding:14px 16px 14px 20px; justify-content:space-between; align-items:center; }
+    .site-nav.scrolled{ padding:10px 16px 10px 20px; }
+    .brand-mark{ width:34px; height:34px; }
+    .site-nav.scrolled .brand-mark{ width:28px; height:28px; }
+    .nav-toggle{ display:block; margin-right:-10px; }
     .site-nav ul{
       position:fixed; top:0; right:0; height:100vh; height:calc(var(--vh,1vh)*100);
       width:min(78vw, 320px);
@@ -608,6 +618,7 @@
       transform:translateX(100%);
       transition:transform .5s var(--ease);
       box-shadow:-20px 0 50px -20px rgba(0,0,0,0.25);
+      z-index:205;
     }
     .nav-open .site-nav ul{ transform:translateX(0); }
     .site-nav ul a{
@@ -619,7 +630,16 @@
       font-weight:400;
       padding:14px 0;
       width:100%;
+      opacity:0;
+      transform:translateX(14px);
+      transition:opacity .4s ease, transform .4s var(--ease);
     }
+    .site-nav ul li{ list-style:none; width:100%; }
+    .nav-open .site-nav ul a{ opacity:1; transform:translateX(0); }
+    .nav-open .site-nav ul li:nth-child(1) a{ transition-delay:.12s; }
+    .nav-open .site-nav ul li:nth-child(2) a{ transition-delay:.18s; }
+    .nav-open .site-nav ul li:nth-child(3) a{ transition-delay:.24s; }
+    .nav-open .site-nav ul li:nth-child(4) a{ transition-delay:.3s; }
     .nav-scrim{
       position:fixed; inset:0; background:rgba(20,20,14,0.35);
       z-index:140; opacity:0; pointer-events:none;
@@ -687,14 +707,12 @@
 </head>
 <body>
 
-  <!-- persistent corner brand mark -->
-  <div class="brand-mark">
-    <img src="images/icon.png" alt="Petal and Pour icon">
-  </div>
-
   <div class="nav-scrim" id="navScrim"></div>
 
   <nav class="site-nav" id="siteNav">
+    <a href="#" class="brand-mark" aria-label="Petal and Pour — back to top">
+      <img src="images/icon.png" alt="Petal and Pour icon">
+    </a>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -960,8 +978,16 @@
     navScrim.addEventListener('click', closeNav);
     document.querySelectorAll('#navList a').forEach(a => a.addEventListener('click', closeNav));
 
+    // brand mark scrolls to top
+    document.querySelector('.brand-mark').addEventListener('click', function(e){
+      e.preventDefault();
+      closeNav();
+      history.pushState({}, '', window.location.pathname);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
     // in-page anchor navigation with real history steps
-    document.querySelectorAll('a[href^="#"]').forEach(link => {
+    document.querySelectorAll('#navList a[href^="#"]').forEach(link => {
       link.addEventListener('click', function(e){
         const targetId = this.getAttribute('href');
         const target = document.querySelector(targetId);
