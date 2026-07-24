@@ -2,21 +2,24 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Petal and Pour — Floral Atelier and Café, Chattanooga TN</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
     --sage:#5e6154;
     --sage-dark:#484a3f;
     --gold:#5c5145;
     --gold-soft:#a9926f;
+    --gold-bright:#e7c98a;
     --cream:#faf7f0;
     --cream-2:#f3efe4;
     --ink:#2a2b24;
     --line: rgba(42,43,36,0.14);
+    --ease: cubic-bezier(.22,.61,.36,1);
+    --vh: 1vh;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -26,6 +29,7 @@
     font-family:'Inter', sans-serif;
     font-weight:300;
     overflow-x:hidden;
+    -webkit-text-size-adjust:100%;
   }
   h1,h2,h3,.serif{
     font-family:'Cormorant Garamond', serif;
@@ -42,14 +46,46 @@
   }
   a{color:inherit; text-decoration:none;}
   img{display:block; width:100%; height:100%; object-fit:cover;}
+  button{font-family:inherit;}
+
+  /* ---------- reveal-on-scroll ---------- */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .9s var(--ease), transform .9s var(--ease);
+    will-change:opacity, transform;
+  }
+  .reveal.in{
+    opacity:1;
+    transform:translateY(0);
+  }
+  .reveal-stagger > *{
+    opacity:0;
+    transform:translateY(20px);
+    transition:opacity .8s var(--ease), transform .8s var(--ease);
+  }
+  .reveal-stagger.in > *{ opacity:1; transform:translateY(0); }
+  .reveal-stagger.in > *:nth-child(1){transition-delay:.05s;}
+  .reveal-stagger.in > *:nth-child(2){transition-delay:.15s;}
+  .reveal-stagger.in > *:nth-child(3){transition-delay:.25s;}
+  .reveal-stagger.in > *:nth-child(4){transition-delay:.35s;}
+
+  @media (prefers-reduced-motion: reduce){
+    .reveal, .reveal-stagger > *{ opacity:1 !important; transform:none !important; transition:none !important; }
+    html{scroll-behavior:auto;}
+    .sprig-draw path{ stroke-dashoffset:0 !important; }
+  }
 
   /* ---------- corner brand mark (persistent) ---------- */
   .brand-mark{
     position:fixed;
-    top:22px; left:28px;
-    width:52px; height:52px;
+    top:20px; left:20px;
+    width:46px; height:46px;
     z-index:200;
+    opacity:0;
+    animation:markIn 1s var(--ease) .4s forwards;
   }
+  @keyframes markIn{ to{ opacity:1; } }
   .brand-mark img{
     width:100%;height:100%;object-fit:contain;
     filter:drop-shadow(0 1px 3px rgba(0,0,0,0.35));
@@ -59,7 +95,15 @@
     position:fixed; top:0; left:0; right:0;
     z-index:150;
     display:flex; justify-content:flex-end; align-items:center;
-    padding:28px 44px;
+    padding:26px 40px;
+    transition:padding .4s var(--ease), background .4s var(--ease), backdrop-filter .4s var(--ease);
+  }
+  .site-nav.scrolled{
+    padding:14px 40px;
+    background:rgba(250,247,240,0.72);
+    backdrop-filter:blur(10px) saturate(1.4);
+    -webkit-backdrop-filter:blur(10px) saturate(1.4);
+    box-shadow:0 1px 0 var(--line);
   }
   .site-nav ul{
     display:flex; gap:38px; list-style:none;
@@ -75,19 +119,38 @@
     content:'';
     position:absolute; left:0; bottom:0;
     width:0; height:1px; background:currentColor;
-    transition:width .35s ease;
+    transition:width .35s var(--ease);
   }
   .site-nav a:hover::after{width:100%;}
+  .site-nav.on-light a{ color:var(--gold); }
 
-  /* nav switches to dark text once scrolled over light sections */
-  .site-nav.on-light a{
-    color:#5c5145;
+  .nav-toggle{
+    display:none;
+    width:26px; height:20px;
+    position:relative;
+    z-index:210;
+    background:none; border:none; cursor:pointer;
+    padding:0;
   }
+  .nav-toggle span{
+    position:absolute; left:0; width:100%; height:1.5px;
+    background:#fff;
+    transition:transform .35s var(--ease), opacity .25s ease, background .3s ease;
+  }
+  .nav-toggle span:nth-child(1){ top:0; }
+  .nav-toggle span:nth-child(2){ top:9px; }
+  .nav-toggle span:nth-child(3){ top:18px; }
+  .site-nav.on-light .nav-toggle span{ background:var(--gold); }
+  .nav-open .nav-toggle span{ background:var(--sage-dark) !important; }
+  .nav-open .nav-toggle span:nth-child(1){ transform:translateY(9px) rotate(45deg); }
+  .nav-open .nav-toggle span:nth-child(2){ opacity:0; }
+  .nav-open .nav-toggle span:nth-child(3){ transform:translateY(-9px) rotate(-45deg); }
 
   /* ---------- HERO ---------- */
   .hero{
     position:relative;
     height:100vh;
+    height:calc(var(--vh, 1vh) * 100);
     width:100%;
     overflow:hidden;
     display:flex;
@@ -99,32 +162,42 @@
     width:100%; height:100%;
     object-fit:cover;
     filter:brightness(0.62) saturate(1.05);
+    transform:scale(1.08);
+    animation:heroZoom 14s ease-out forwards;
   }
+  @keyframes heroZoom{ to{ transform:scale(1); } }
   .hero::before{
     content:'';
     position:absolute; inset:0;
-    background:linear-gradient(180deg, rgba(20,20,14,0.15) 0%, rgba(20,20,14,0.05) 35%, rgba(20,20,14,0.55) 100%);
+    background:linear-gradient(180deg, rgba(20,20,14,0.2) 0%, rgba(20,20,14,0.06) 35%, rgba(20,20,14,0.62) 100%);
     z-index:1;
   }
   .hero-content{
     position:relative; z-index:2;
-    padding:0 44px 72px;
+    padding:0 24px 64px;
     display:flex; flex-direction:column; align-items:center; justify-content:flex-end;
-    gap:34px;
+    gap:30px;
     text-align:center;
   }
   .hero-title-img{
-    width:min(760px, 78vw);
+    width:min(760px, 82vw);
     display:block;
     margin:0 auto;
+    opacity:0;
+    transform:translateY(18px);
+    animation:heroIn 1.1s var(--ease) .5s forwards;
   }
   .hero-sub{
     color:#f4f1e8;
     text-align:center;
     max-width:320px;
+    opacity:0;
+    transform:translateY(14px);
+    animation:heroIn 1.1s var(--ease) .85s forwards;
   }
+  @keyframes heroIn{ to{ opacity:1; transform:translateY(0); } }
   .hero-sub .serif{
-    font-size:26px; font-style:italic; font-weight:400;
+    font-size:clamp(20px, 5vw, 26px); font-style:italic; font-weight:400;
     margin-bottom:14px;
     line-height:1.15;
   }
@@ -132,14 +205,19 @@
     font-size:11px; letter-spacing:0.16em; text-transform:uppercase;
     border-bottom:1px solid rgba(244,241,232,0.6);
     padding-bottom:3px;
+    transition:border-color .3s ease, opacity .3s ease;
   }
+  .hero-sub a:hover{ border-color:#fff; opacity:.85; }
   .scroll-cue{
-    position:absolute; bottom:28px; left:44px; z-index:2;
-    color:#f4f1e8; font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
+    position:absolute; bottom:24px; left:24px; z-index:2;
+    color:#f4f1e8; font-size:10px; letter-spacing:0.2em; text-transform:uppercase;
     display:flex; align-items:center; gap:12px;
+    opacity:0;
+    animation:cueIn 1s ease 1.4s forwards;
   }
+  @keyframes cueIn{ to{ opacity:1; } }
   .scroll-cue .stem{
-    width:1px; height:36px; background:rgba(244,241,232,0.5);
+    width:1px; height:34px; background:rgba(244,241,232,0.5);
     position:relative; overflow:hidden;
   }
   .scroll-cue .stem::after{
@@ -153,13 +231,19 @@
   .section-pad{ padding:150px 44px; }
   .container{ max-width:1280px; margin:0 auto; }
 
-  /* thin sprig divider - signature motif */
+  /* thin sprig divider - signature motif, hand-drawn on scroll */
   .sprig{
     width:64px; height:22px;
     margin:26px 0;
-    opacity:0.8;
+    opacity:0.85;
   }
   .sprig.center{margin-left:auto;margin-right:auto;}
+  .sprig-draw path{
+    stroke-dasharray:140;
+    stroke-dashoffset:140;
+    transition:stroke-dashoffset 1.4s var(--ease) .1s;
+  }
+  .reveal.in .sprig-draw path{ stroke-dashoffset:0; }
 
   /* ---------- STORY (offset stacked images) ---------- */
   .story{
@@ -181,6 +265,7 @@
     width:74%; height:72%;
     border-radius:2px;
     box-shadow:0 30px 60px -20px rgba(42,43,36,0.35);
+    overflow:hidden;
   }
   .story-img-front{
     position:absolute;
@@ -189,10 +274,16 @@
     border-radius:2px;
     box-shadow:0 30px 70px -18px rgba(42,43,36,0.45);
     border:8px solid var(--cream);
+    overflow:hidden;
   }
+  .story-img-back img, .story-img-front img{
+    transition:transform .8s var(--ease);
+  }
+  .story-images:hover .story-img-back img{ transform:scale(1.06); }
+  .story-images:hover .story-img-front img{ transform:scale(1.06); }
   .story-text .eyebrow{margin-bottom:18px;}
   .story-text h2{
-    font-size:46px;
+    font-size:clamp(32px, 4vw, 46px);
     line-height:1.12;
     font-weight:400;
     margin-bottom:28px;
@@ -228,7 +319,7 @@
     margin:0 auto 90px;
   }
   .menu-header h2{
-    font-size:50px; color:#fff; font-weight:400; margin:16px 0 8px;
+    font-size:clamp(34px, 5vw, 50px); color:#fff; font-weight:400; margin:16px 0 8px;
   }
   .menu-header p{
     font-size:15px; color:#d9d3bd; letter-spacing:0.04em; margin-top:10px;
@@ -259,13 +350,21 @@
     font-family:'Cormorant Garamond',serif;
     font-style:italic;
     font-size:24px;
-    color:#e7c98a;
+    color:var(--gold-bright);
     margin-bottom:22px;
     padding-bottom:12px;
     border-bottom:1px solid rgba(250,247,240,0.22);
   }
   .menu-item{
     margin-bottom:26px;
+    padding:4px 6px;
+    margin-left:-6px;
+    border-radius:4px;
+    transition:background .3s ease, transform .3s ease;
+  }
+  .menu-item:hover{
+    background:rgba(255,255,255,0.045);
+    transform:translateX(3px);
   }
   .menu-item-row{
     display:flex; justify-content:space-between; align-items:baseline;
@@ -277,7 +376,7 @@
   .menu-item-row .price{
     font-family:'Inter',sans-serif;
     font-size:13px; font-weight:400;
-    color:#e7c98a;
+    color:var(--gold-bright);
     white-space:nowrap;
   }
   .menu-item p{
@@ -299,11 +398,12 @@
     color:#fff;
     border:1px solid rgba(255,255,255,0.4);
     padding:16px 38px;
-    transition:all .3s ease;
+    transition:all .35s var(--ease);
   }
   .menu-full-cta a:hover{
     background:#fff; color:var(--sage-dark);
     border-color:#fff;
+    letter-spacing:0.24em;
   }
 
   /* ---------- RESERVATIONS ---------- */
@@ -323,6 +423,8 @@
     overflow:hidden;
     order:2;
   }
+  .reserve-image img{ transition:transform .9s var(--ease); }
+  .reserve-image:hover img{ transform:scale(1.05); }
   .reserve-image .tag{
     position:absolute; top:28px; left:28px;
     background:var(--cream);
@@ -345,7 +447,7 @@
     order:1;
   }
   .reserve-form-wrap h2{
-    font-size:42px; color:var(--sage-dark); margin:14px 0 14px;
+    font-size:clamp(30px, 4vw, 42px); color:var(--sage-dark); margin:14px 0 14px;
   }
   .reserve-form-wrap > p{
     font-size:15px; color:#5a5b4e; line-height:1.75; margin-bottom:38px; max-width:400px;
@@ -356,13 +458,14 @@
   }
   .field{
     display:flex; flex-direction:column; gap:8px;
+    position:relative;
   }
   .field label{
     font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold);
   }
   .field input, .field select{
     font-family:'Inter',sans-serif;
-    font-size:14px;
+    font-size:16px;
     padding:13px 4px;
     background:transparent;
     border:none;
@@ -370,10 +473,17 @@
     color:var(--ink);
     outline:none;
     transition:border-color .25s ease;
+    -webkit-appearance:none;
+    appearance:none;
+    border-radius:0;
   }
-  .field input:focus, .field select:focus{
-    border-color:var(--gold);
+  .field input::placeholder{ color:#a6a290; font-weight:300; }
+  .field .underline{
+    position:absolute; left:0; bottom:0; height:1px; width:0;
+    background:var(--gold);
+    transition:width .35s var(--ease);
   }
+  .field input:focus ~ .underline, .field select:focus ~ .underline{ width:100%; }
   .field.full{grid-column:1/-1;}
   .submit-btn{
     margin-top:16px;
@@ -384,9 +494,11 @@
     padding:17px 44px;
     font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
     cursor:pointer;
-    transition:background .3s ease;
+    transition:background .3s ease, transform .25s var(--ease), box-shadow .3s ease;
+    width:100%;
   }
-  .submit-btn:hover{ background:var(--gold); }
+  .submit-btn:hover{ background:var(--gold); box-shadow:0 10px 26px -10px rgba(72,74,63,0.55); }
+  .submit-btn:active{ transform:scale(.98); }
   .form-hint{
     margin-top:18px;
     font-size:11px; line-height:1.6;
@@ -409,14 +521,14 @@
     background:var(--cream);
   }
   .visit-info h2{
-    font-size:42px; color:var(--sage-dark); margin:14px 0 40px;
+    font-size:clamp(30px, 4vw, 42px); color:var(--sage-dark); margin:14px 0 40px;
   }
   .visit-block{
     margin-bottom:34px;
     padding-bottom:34px;
     border-bottom:1px solid var(--line);
   }
-  .visit-block:last-child{border-bottom:none;}
+  .visit-block:last-child{border-bottom:none; margin-bottom:0; padding-bottom:0;}
   .visit-block .label{
     font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold);
     margin-bottom:10px;
@@ -442,7 +554,7 @@
   footer{
     background:var(--sage-dark);
     color:#e9e5d6;
-    padding:70px 44px 34px;
+    padding:70px 24px 34px;
     text-align:center;
   }
   footer .serif{
@@ -450,6 +562,7 @@
   }
   footer .foot-links{
     display:flex; justify-content:center; gap:34px;
+    flex-wrap:wrap;
     margin:26px 0 40px;
     font-size:11px; letter-spacing:0.14em; text-transform:uppercase;
   }
@@ -459,16 +572,116 @@
     font-size:11px; color:#a9a488; letter-spacing:0.04em;
   }
 
+  /* ---------- back to top ---------- */
+  .to-top{
+    position:fixed; right:22px; bottom:22px; z-index:120;
+    width:44px; height:44px; border-radius:50%;
+    background:var(--sage-dark); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    border:none; cursor:pointer;
+    opacity:0; pointer-events:none;
+    transform:translateY(8px);
+    transition:opacity .35s var(--ease), transform .35s var(--ease), background .3s ease;
+    box-shadow:0 10px 24px -8px rgba(42,43,36,0.4);
+  }
+  .to-top.show{ opacity:1; pointer-events:auto; transform:translateY(0); }
+  .to-top:hover{ background:var(--gold); }
+
+  /* =======================================================
+     MOBILE — comprehensive rework, not just column stacking
+     ======================================================= */
   @media (max-width: 980px){
-    .story .container, .reserve .container, .visit .container{ grid-template-columns:1fr; }
-    .story-images{ height:420px; margin-bottom:20px; }
-    .menu-body{ grid-template-columns:1fr; }
-    .menu-image{ position:static; height:320px; margin-bottom:40px; }
-    .menu-grid{ grid-template-columns:1fr; }
-    .form-row{ grid-template-columns:1fr; }
-    .site-nav ul{ gap:20px; }
-    .reserve-form-wrap, .visit-info{ padding:56px 30px; }
-    .reserve-image, .reserve-form-wrap{ order:initial; }
+    .section-pad{ padding:96px 22px; }
+
+    /* nav → slide-in panel */
+    .site-nav{ padding:18px 20px; justify-content:space-between; align-items:center; }
+    .site-nav.scrolled{ padding:14px 20px; }
+    .brand-mark{ top:14px; left:16px; width:38px; height:38px; }
+    .nav-toggle{ display:block; }
+    .site-nav ul{
+      position:fixed; top:0; right:0; height:100vh; height:calc(var(--vh,1vh)*100);
+      width:min(78vw, 320px);
+      background:var(--cream);
+      flex-direction:column; justify-content:center; align-items:flex-start;
+      gap:8px;
+      padding:0 40px;
+      transform:translateX(100%);
+      transition:transform .5s var(--ease);
+      box-shadow:-20px 0 50px -20px rgba(0,0,0,0.25);
+    }
+    .nav-open .site-nav ul{ transform:translateX(0); }
+    .site-nav ul a{
+      color:var(--sage-dark) !important;
+      font-size:22px;
+      font-family:'Cormorant Garamond',serif;
+      text-transform:none;
+      letter-spacing:0;
+      font-weight:400;
+      padding:14px 0;
+      width:100%;
+    }
+    .nav-scrim{
+      position:fixed; inset:0; background:rgba(20,20,14,0.35);
+      z-index:140; opacity:0; pointer-events:none;
+      transition:opacity .4s ease;
+    }
+    .nav-open .nav-scrim{ opacity:1; pointer-events:auto; }
+
+    /* hero */
+    .hero-content{ padding:0 20px 52px; gap:24px; }
+    .hero-title-img{ width:92vw; }
+    .hero-sub{ max-width:280px; }
+    .scroll-cue{ left:20px; bottom:18px; }
+
+    /* story */
+    .story .container{ grid-template-columns:1fr; gap:0; }
+    .story-images{ height:56vh; min-height:340px; margin-bottom:56px; }
+    .story-img-back{ width:80%; height:74%; }
+    .story-img-front{ width:64%; height:56%; border-width:6px; }
+    .story-text p{ max-width:none; }
+    .story-note{ max-width:none; }
+
+    /* menu */
+    .menu-header{ margin-bottom:56px; }
+    .menu-body{ grid-template-columns:1fr; gap:0; }
+    .menu-image{ position:static; height:280px; margin-bottom:44px; }
+    .menu-grid{ grid-template-columns:1fr; gap:0; }
+    .menu-cat{ margin-bottom:48px; }
+
+    /* reserve */
+    .reserve .container{ grid-template-columns:1fr; border:none; }
+    .reserve-image{ order:1; min-height:300px; }
+    .reserve-form-wrap{ order:2; padding:52px 22px 60px; }
+    .reserve-form-wrap > p{ max-width:none; }
+    .form-row{ grid-template-columns:1fr; gap:18px; margin-bottom:18px; }
+    .submit-btn{ align-self:stretch; text-align:center; }
+    .form-hint{ max-width:none; }
+
+    /* visit */
+    .visit .container{ grid-template-columns:1fr; border:none; }
+    .visit-info{ padding:56px 22px 44px; order:2; }
+    .visit-map{ min-height:340px; order:1; }
+    .section-pad[style]{ padding-top:0 !important; }
+
+    footer{ padding:60px 22px 30px; }
+    footer .foot-links{ gap:22px 28px; }
+
+    .to-top{ right:16px; bottom:16px; width:40px; height:40px; }
+  }
+
+  @media (max-width: 480px){
+    .story-images{ height:50vh; min-height:280px; }
+    .hero-sub .serif{ font-size:19px; }
+    .menu-header h2{ font-size:32px; }
+    .reserve-form-wrap h2, .visit-info h2{ font-size:28px; }
+  }
+
+  /* touch: disable hover-only affordances from causing sticky states */
+  @media (hover: none){
+    .menu-item:hover{ background:none; transform:none; }
+    .story-images:hover .story-img-back img,
+    .story-images:hover .story-img-front img,
+    .reserve-image:hover img{ transform:none; }
   }
 </style>
 </head>
@@ -479,8 +692,13 @@
     <img src="images/icon.png" alt="Petal and Pour icon">
   </div>
 
+  <div class="nav-scrim" id="navScrim"></div>
+
   <nav class="site-nav" id="siteNav">
-    <ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul id="navList">
       <li><a href="#story">Our Story</a></li>
       <li><a href="#menu">Menu</a></li>
       <li><a href="#reserve">Reserve</a></li>
@@ -506,7 +724,7 @@
   <!-- ============ STORY — STACKED VISIBLE IMAGES ============ -->
   <section class="story" id="story">
     <div class="section-pad container">
-      <div class="story-images">
+      <div class="story-images reveal">
         <div class="story-img-back">
           <img src="images/story-back.jpg" alt="Story image — back">
         </div>
@@ -514,9 +732,10 @@
           <img src="images/story-front.jpg" alt="Story image — front">
         </div>
       </div>
-      <div class="story-text">
+      <div class="story-text reveal">
         <p class="eyebrow">Section Label</p>
         <h2>Headline goes here</h2>
+        <svg class="sprig sprig-draw" viewBox="0 0 64 22" fill="none"><path d="M2 11c10-8 20-8 30 0s20 8 30 0" stroke="#a9926f" stroke-width="1.2"/></svg>
         <p>[Client to provide: brief description of the business, its concept, and what makes it unique. 2–3 sentences.]</p>
         <div class="story-note">[Location / tagline placeholder]</div>
       </div>
@@ -526,18 +745,19 @@
   <!-- ============ MENU ============ -->
   <section class="menu-section" id="menu">
     <div class="section-pad container">
-      <div class="menu-header">
+      <div class="menu-header reveal">
         <p class="eyebrow">Menu</p>
         <h2>Spring Menu</h2>
+        <svg class="sprig sprig-draw center" viewBox="0 0 64 22" fill="none"><path d="M2 11c10-8 20-8 30 0s20 8 30 0" stroke="#e7c98a" stroke-width="1.2"/></svg>
         <p>[Full menu below, using client-provided items and pricing.]</p>
       </div>
 
       <div class="menu-body">
-        <div class="menu-image">
+        <div class="menu-image reveal">
           <img src="images/menu-image.jpg" alt="Menu image">
         </div>
       <div class="menu-grid">
-        <div>
+        <div class="reveal-stagger reveal">
           <div class="menu-cat">
             <div class="menu-cat-title">Seasonal Selections</div>
             <div class="menu-item">
@@ -567,7 +787,7 @@
           </div>
         </div>
 
-        <div>
+        <div class="reveal-stagger reveal">
           <div class="menu-cat">
             <div class="menu-cat-title">Classics</div>
             <div class="menu-item">
@@ -617,32 +837,32 @@
   <!-- ============ RESERVATIONS ============ -->
   <section class="reserve" id="reserve">
     <div class="section-pad container">
-      <div class="reserve-image">
+      <div class="reserve-image reveal">
         <img src="images/reserve-image.jpg" alt="Reservation image">
         <div class="tag">
           <strong>[Label]</strong>
           [Client to provide short caption for this image.]
         </div>
       </div>
-      <div class="reserve-form-wrap">
+      <div class="reserve-form-wrap reveal">
         <p class="eyebrow">Reservations</p>
         <h2>Reserve a table</h2>
         <p>[Client to provide a short line about the reservation process, if any.]</p>
-        <form id="reserveForm">
+        <form id="reserveForm" novalidate>
           <div class="form-row">
-            <div class="field"><label>Full Name</label><input type="text" name="name" placeholder="Your name" required></div>
-            <div class="field"><label>Phone</label><input type="tel" name="phone" placeholder="(423) 000-0000" required></div>
+            <div class="field"><label>Full Name</label><input type="text" name="name" placeholder="Your name" required><span class="underline"></span></div>
+            <div class="field"><label>Phone</label><input type="tel" name="phone" placeholder="(423) 000-0000" required><span class="underline"></span></div>
           </div>
           <div class="form-row">
-            <div class="field"><label>Date</label><input type="date" name="date" required></div>
-            <div class="field"><label>Time</label><input type="time" name="time" required></div>
+            <div class="field"><label>Date</label><input type="date" name="date" required><span class="underline"></span></div>
+            <div class="field"><label>Time</label><input type="time" name="time" required><span class="underline"></span></div>
           </div>
           <div class="form-row">
-            <div class="field"><label>Guests</label><input type="number" name="guests" min="1" placeholder="e.g. 2" required></div>
-            <div class="field"><label>Occasion</label><input type="text" name="occasion" placeholder="Optional"></div>
+            <div class="field"><label>Guests</label><input type="number" name="guests" min="1" placeholder="e.g. 2" required><span class="underline"></span></div>
+            <div class="field"><label>Occasion</label><input type="text" name="occasion" placeholder="Optional"><span class="underline"></span></div>
           </div>
           <div class="form-row">
-            <div class="field full"><label>Notes</label><input type="text" name="notes" placeholder="Anything we should know"></div>
+            <div class="field full"><label>Notes</label><input type="text" name="notes" placeholder="Anything we should know"><span class="underline"></span></div>
           </div>
           <button type="submit" class="submit-btn">Send Reservation Request</button>
           <p class="form-hint">[Placeholder phone number below — replace with the business's number. Submitting opens the guest's messaging app with the reservation details pre-filled as a text.]</p>
@@ -677,7 +897,7 @@
   <!-- ============ VISIT — MAP + INFO ============ -->
   <section class="visit" id="visit">
     <div class="section-pad container" style="padding-top:0;">
-      <div class="visit-info">
+      <div class="visit-info reveal">
         <p class="eyebrow">Visit</p>
         <h2>Location &amp; hours</h2>
 
@@ -698,7 +918,7 @@
           <div class="hours-row"><span>Sunday</span><span>8:00 AM – 4:00 PM</span></div>
         </div>
       </div>
-      <div class="visit-map">
+      <div class="visit-map reveal">
         <img src="images/map.jpg" alt="Map">
       </div>
     </div>
@@ -715,9 +935,32 @@
     <div class="fine">© 2025 Petal and Pour — Floral Atelier and Café, Chattanooga, TN</div>
   </footer>
 
+  <button class="to-top" id="toTop" aria-label="Back to top">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 13V3M8 3L3 8M8 3l5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
+
   <script>
-    // Ensure in-page anchor navigation creates real back/forward history steps,
-    // so the browser back button moves between sections instead of leaving the page.
+    // real 100vh fix for mobile browser chrome
+    function setVh(){
+      document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+    }
+    setVh();
+    window.addEventListener('resize', setVh);
+    window.addEventListener('orientationchange', setVh);
+
+    // mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const navScrim = document.getElementById('navScrim');
+    function closeNav(){ document.body.classList.remove('nav-open'); navToggle.setAttribute('aria-expanded','false'); }
+    function toggleNav(){
+      const open = document.body.classList.toggle('nav-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+    navToggle.addEventListener('click', toggleNav);
+    navScrim.addEventListener('click', closeNav);
+    document.querySelectorAll('#navList a').forEach(a => a.addEventListener('click', closeNav));
+
+    // in-page anchor navigation with real history steps
     document.querySelectorAll('a[href^="#"]').forEach(link => {
       link.addEventListener('click', function(e){
         const targetId = this.getAttribute('href');
@@ -729,36 +972,51 @@
       });
     });
 
-    window.addEventListener('popstate', function(e){
+    window.addEventListener('popstate', function(){
       const hash = window.location.hash;
       if(hash){
         const target = document.querySelector(hash);
-        if(target){
-          target.scrollIntoView({ behavior: 'smooth' });
-        }
+        if(target){ target.scrollIntoView({ behavior: 'smooth' }); }
       } else {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
-  </script>
 
-  <script>
-    // Nav switches to black text once scrolled past the dark hero video
+    // nav appearance on scroll (background + text color) + back-to-top
     const nav = document.getElementById('siteNav');
     const hero = document.querySelector('.hero');
+    const toTop = document.getElementById('toTop');
 
-    function updateNavColor(){
+    function updateOnScroll(){
       const heroBottom = hero.getBoundingClientRect().bottom;
-      if(heroBottom <= 80){
-        nav.classList.add('on-light');
-      } else {
-        nav.classList.remove('on-light');
-      }
+      if(heroBottom <= 80){ nav.classList.add('on-light'); } else { nav.classList.remove('on-light'); }
+      if(window.scrollY > 40){ nav.classList.add('scrolled'); } else { nav.classList.remove('scrolled'); }
+      if(window.scrollY > window.innerHeight * 0.6){ toTop.classList.add('show'); } else { toTop.classList.remove('show'); }
     }
+    window.addEventListener('scroll', updateOnScroll, { passive:true });
+    window.addEventListener('resize', updateOnScroll);
+    updateOnScroll();
 
-    window.addEventListener('scroll', updateNavColor);
-    window.addEventListener('resize', updateNavColor);
-    updateNavColor();
+    toTop.addEventListener('click', () => {
+      history.pushState({}, '', window.location.pathname);
+      window.scrollTo({ top:0, behavior:'smooth' });
+    });
+
+    // scroll reveal
+    const revealEls = document.querySelectorAll('.reveal');
+    if('IntersectionObserver' in window){
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            entry.target.classList.add('in');
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.16, rootMargin: '0px 0px -60px 0px' });
+      revealEls.forEach(el => io.observe(el));
+    } else {
+      revealEls.forEach(el => el.classList.add('in'));
+    }
   </script>
 </body>
 </html>
